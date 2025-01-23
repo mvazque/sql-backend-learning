@@ -49,6 +49,29 @@ app.post("/employee", async (req, res) => {
     res.status(201).json({ message: 'Data inserted successfully', result });
 });
 
+app.put("/employee/:username", async(req, res) => {
+    const username = req.params['username'];
+    console.log(username);
+
+    // Set up the request and get the new email from the body
+    const request = new sql.Request();
+    const { email } = req.body;
+
+    console.log(email);
+
+    const query = `UPDATE employees SET 
+                   email = @email 
+                   WHERE username = @username`;
+
+    request.input('username', sql.NVarChar, username);
+    request.input('email', sql.NVarChar, email);
+
+    const result = await request.query(query);
+
+
+    res.status(200).json({message: 'Call was successful', result});
+})
+
 // Start the server on port 3000
 app.listen(3000, () => {
     console.log("Listening on port 3000...");
